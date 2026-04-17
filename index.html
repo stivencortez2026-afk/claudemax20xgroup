@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Acesso ao plano Max 20x da Claude dividido em grupo. R$ 110/mês por pessoa. Use na sua IDE favorita." />
+<title>Claude Grupos · R$ 110/mês para o Max 20x</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #15151b;
+    --bg-1: #1c1c23;
+    --bg-2: #24242c;
+    --ink: #f0eeeb;
+    --ink-dim: #9a938b;
+    --ink-faint: #55524f;
+    --line: #30303a;
+    --line-2: #232329;
+    --accent: #ff6a1f;       /* hot orange */
+    --accent-2: #ffa64d;     /* amber warm */
+    --accent-3: #8b5cf6;     /* violet glow */
+    --success: #25d366;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Geist', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.005em;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(1200px 800px at 85% -10%, rgba(255, 106, 31, 0.08), transparent 60%),
+      radial-gradient(900px 600px at -10% 30%, rgba(139, 92, 246, 0.08), transparent 60%),
+      radial-gradient(700px 500px at 60% 110%, rgba(255, 166, 77, 0.07), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.035; pointer-events: none; z-index: 100; mix-blend-mode: overlay;
+  }
+
+  .mono { font-family: 'Geist Mono', monospace; font-weight: 500; letter-spacing: -0.02em; }
+  .display {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 100, 'opsz' 96;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 0.94;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 28px;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(7, 7, 8, 0.6);
+    border-bottom: 1px solid var(--line-2);
+  }
+  nav .brand {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 85, 'wght' 700;
+    font-size: 22px; letter-spacing: -0.04em;
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: inherit;
+  }
+  nav .brand .logo-mark {
+    width: 34px; height: 34px; flex-shrink: 0;
+    display: block;
+    filter: drop-shadow(0 4px 10px rgba(255, 106, 31, 0.35));
+    transition: transform 0.4s cubic-bezier(.2,.9,.3,1);
+  }
+  nav .brand:hover .logo-mark { transform: rotate(30deg) scale(1.06); }
+  nav .brand .slash { color: var(--accent); font-weight: 400; }
+  nav .tag {
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.1em;
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  nav .tag .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    padding: 130px 28px 60px;
+    max-width: 1380px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 56px; align-items: center;
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em;
+    padding: 7px 14px;
+    background: rgba(255, 106, 31, 0.06);
+    border: 1px solid rgba(255, 106, 31, 0.2);
+    border-radius: 999px;
+    margin-bottom: 28px;
+    font-weight: 500;
+  }
+  .eyebrow::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 10px var(--accent);
+  }
+
+  h1.display {
+    font-size: clamp(46px, 6.6vw, 94px);
+    line-height: 1.02;
+    margin-bottom: 22px;
+    font-variation-settings: 'wdth' 92, 'opsz' 96, 'wght' 540;
+  }
+  h1 .thin {
+    font-variation-settings: 'wdth' 108, 'opsz' 96, 'wght' 380;
+    color: var(--ink-dim);
+  }
+  h1 .hi {
+    color: var(--accent);
+    font-variation-settings: 'wdth' 90, 'opsz' 96, 'wght' 620;
+  }
+  h1 .unit {
+    font-variation-settings: 'wdth' 110, 'opsz' 96, 'wght' 380;
+    color: var(--ink-dim);
+    letter-spacing: -0.02em;
+  }
+  h1 .strike {
+    position: relative;
+    color: var(--ink-faint);
+    font-variation-settings: 'wdth' 100, 'opsz' 96, 'wght' 460;
+  }
+  h1 .strike::after {
+    content: '';
+    position: absolute;
+    left: -4px; right: -4px;
+    top: 54%;
+    height: 6px;
+    background: var(--accent-2, #ff6a1f);
+    transform: rotate(-5deg);
+    border-radius: 999px;
+    opacity: 0.9;
+  }
+
+  .hero-save {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 10px 18px;
+    margin-bottom: 34px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12.5px; font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--ink-dim);
+  }
+  .hero-save .was {
+    color: var(--ink-faint);
+    position: relative; padding: 0 2px;
+  }
+  .hero-save .was::after {
+    content: ''; position: absolute; left: -2px; right: -2px;
+    top: 52%; height: 2px; background: var(--accent-2);
+    transform: rotate(-6deg); border-radius: 999px;
+  }
+  .hero-save .arrow { color: var(--accent); font-size: 14px; }
+  .hero-save .pct {
+    color: var(--accent);
+    padding: 3px 9px; border-radius: 6px;
+    background: rgba(255, 106, 31, 0.12);
+    border: 1px solid rgba(255, 106, 31, 0.25);
+  }
+
+  .lede {
+    font-size: 18.5px; line-height: 1.55; color: var(--ink-dim);
+    max-width: 520px; margin-bottom: 36px;
+    font-weight: 400;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  .cta-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 26px;
+    font-family: 'Geist', sans-serif; font-size: 15px;
+    font-weight: 600; letter-spacing: -0.01em;
+    text-decoration: none; border: none; cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.3s cubic-bezier(.2,.9,.3,1);
+  }
+  .btn-primary {
+    background: var(--accent); color: #0a0a0a;
+    box-shadow: 0 0 0 1px var(--accent), 0 20px 50px -15px rgba(255, 106, 31, 0.5);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px var(--accent), 0 30px 60px -15px rgba(255, 106, 31, 0.7);
+  }
+  .btn-primary .arrow {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.15); border-radius: 50%;
+    transition: transform 0.3s;
+  }
+  .btn-primary:hover .arrow { transform: translateX(3px) rotate(-45deg); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.03); color: var(--ink);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(10px);
+  }
+  .btn-ghost:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--ink-dim);
+  }
+
+  /* ===== TERMINAL CARD ===== */
+  .terminal-wrap {
+    position: relative;
+    perspective: 1200px;
+  }
+  .terminal {
+    background: linear-gradient(180deg, rgba(21, 21, 26, 0.9), rgba(13, 13, 16, 0.9));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 40px 80px -30px rgba(0,0,0,0.8),
+      0 0 80px -20px rgba(255, 106, 31, 0.1);
+    transform: rotateY(-3deg) rotateX(2deg);
+    transition: transform 0.5s cubic-bezier(.2,.9,.3,1);
+  }
+  .terminal:hover { transform: rotateY(0deg) rotateX(0deg) scale(1.015); }
+  .terminal::before {
+    content: ''; position: absolute; inset: -1px;
+    background: linear-gradient(135deg, rgba(255, 106, 31, 0.3), transparent 40%, transparent 60%, rgba(139, 92, 246, 0.2));
+    border-radius: 18px;
+    z-index: -1;
+    opacity: 0.5;
+  }
+  .term-head {
+    display: flex; align-items: center; gap: 7px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(0,0,0,0.3);
+  }
+  .term-head .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .term-head .dot:nth-child(1) { background: #ff5f56; }
+  .term-head .dot:nth-child(2) { background: #ffbd2e; }
+  .term-head .dot:nth-child(3) { background: #27c93f; }
+  .term-head .title {
+    margin-left: auto;
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--ink-dim);
+  }
+  .term-body {
+    padding: 24px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 13.5px; line-height: 1.9;
+  }
+  .term-body .prompt { color: var(--accent); }
+  .term-body .comment { color: var(--ink-faint); font-style: italic; }
+  .term-body .val { color: var(--accent-2); font-weight: 500; }
+  .term-body .ok { color: var(--accent); }
+  .cursor {
+    display: inline-block; width: 8px; height: 15px;
+    background: var(--accent); vertical-align: text-bottom;
+    animation: blink 1s steps(2) infinite;
+    box-shadow: 0 0 8px var(--accent);
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ===== PRICE STRIP ===== */
+  .price-strip {
+    position: relative; z-index: 1;
+    max-width: 1380px; margin: 40px auto 0;
+    padding: 0 28px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .price-cell {
+    padding: 28px 26px;
+    background: linear-gradient(180deg, rgba(21, 21, 26, 0.7), rgba(13, 13, 16, 0.7));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .price-cell:hover {
+    transform: translateY(-3px);
+    border-color: var(--ink-faint);
+  }
+  .price-cell::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 106, 31, 0.5), transparent);
+  }
+  .price-cell .label {
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+  .price-cell .val {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 90, 'opsz' 96, 'wght' 600;
+    font-size: 44px; line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .price-cell .val .u {
+    font-variation-settings: 'wdth' 110, 'wght' 300;
+    color: var(--ink-dim); font-size: 22px; margin-left: 4px;
+  }
+  .price-cell .val .hi { color: var(--accent); }
+  .price-cell .sub { font-size: 13px; color: var(--ink-dim); margin-top: 8px; }
+
+  /* ===== SECTION 2 ===== */
+  section.deep {
+    position: relative; z-index: 1;
+    padding: 120px 28px;
+    max-width: 1380px;
+    margin: 0 auto;
+  }
+  .section-head {
+    display: grid; grid-template-columns: 1fr 1.4fr;
+    gap: 56px; margin-bottom: 80px;
+    align-items: end;
+  }
+  .section-head .tag-mini {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 18px;
+  }
+  .section-head .tag-mini::before {
+    content: ''; width: 24px; height: 1px; background: var(--ink-dim);
+  }
+  .section-head h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 95, 'opsz' 96, 'wght' 550;
+    font-size: clamp(42px, 5.8vw, 78px);
+    letter-spacing: -0.035em; line-height: 0.94;
+  }
+  .section-head h2 .hi { color: var(--accent); }
+  .section-head p {
+    font-size: 18px; color: var(--ink-dim); line-height: 1.6;
+    max-width: 540px;
+  }
+
+  /* ===== STEPS ===== */
+  .steps {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-bottom: 100px;
+  }
+  .step {
+    padding: 36px 30px;
+    background: linear-gradient(180deg, rgba(21, 21, 26, 0.7), rgba(13, 13, 16, 0.5));
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    position: relative; overflow: hidden;
+    transition: transform 0.35s, border-color 0.35s;
+  }
+  .step:hover { transform: translateY(-4px); border-color: rgba(255, 106, 31, 0.3); }
+  .step::before {
+    content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .step:hover::before { opacity: 1; }
+  .step .num {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 70, 'opsz' 96, 'wght' 700;
+    font-size: 64px;
+    background: linear-gradient(180deg, var(--accent), rgba(255, 106, 31, 0.2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 0.9; margin-bottom: 20px;
+    letter-spacing: -0.06em;
+  }
+  .step h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 100, 'opsz' 32, 'wght' 600;
+    font-size: 22px;
+    margin-bottom: 10px; letter-spacing: -0.02em;
+  }
+  .step p { color: var(--ink-dim); font-size: 15px; line-height: 1.6; }
+
+  /* ===== FAQ ===== */
+  .faq-wrap { display: grid; grid-template-columns: 1fr 1.4fr; gap: 72px; }
+  .faq-side h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 95, 'opsz' 96, 'wght' 550;
+    font-size: 52px; line-height: 0.94; letter-spacing: -0.035em;
+    margin-bottom: 18px;
+  }
+  .faq-side h3 .hi { color: var(--accent); }
+  .faq-side p { color: var(--ink-dim); font-size: 15.5px; line-height: 1.6; }
+  .faq-side .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    background: rgba(255, 106, 31, 0.08);
+    color: var(--accent);
+    padding: 6px 12px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500;
+    margin-bottom: 22px;
+    border: 1px solid rgba(255, 106, 31, 0.2);
+  }
+
+  .faq-list { display: flex; flex-direction: column; gap: 10px; }
+  .faq-item {
+    padding: 22px 26px;
+    background: rgba(21, 21, 26, 0.55);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .faq-item:hover { border-color: var(--ink-faint); }
+  .faq-item.open { border-color: rgba(255, 106, 31, 0.35); background: rgba(21, 21, 26, 0.8); }
+  .faq-item .q {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 20px;
+  }
+  .faq-item .q h4 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 100, 'opsz' 32, 'wght' 550;
+    font-size: 19px; letter-spacing: -0.015em; line-height: 1.3;
+  }
+  .faq-item .toggle {
+    width: 28px; height: 28px; flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink); font-size: 16px; font-weight: 300;
+    transition: all 0.3s;
+  }
+  .faq-item.open .toggle {
+    background: var(--accent); color: #0a0a0a;
+    border-color: var(--accent);
+    transform: rotate(45deg);
+  }
+  .faq-item .a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease, margin-top 0.4s ease;
+  }
+  .faq-item.open .a { max-height: 500px; margin-top: 16px; }
+  .faq-item .a p {
+    color: var(--ink-dim); font-size: 15.5px; line-height: 1.65;
+    max-width: 640px;
+  }
+  .faq-item .a p b { color: var(--ink); font-weight: 600; }
+  .faq-item .a p + p { margin-top: 10px; }
+  .faq-item .a .callout {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: rgba(255, 106, 31, 0.05);
+    border: 1px solid rgba(255, 106, 31, 0.2);
+    border-radius: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12.5px; color: var(--ink);
+    line-height: 1.6;
+  }
+
+  /* ===== FINAL CTA ===== */
+  .final-cta {
+    margin-top: 100px;
+    padding: 80px 56px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255, 106, 31, 0.13), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(139, 92, 246, 0.12), transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(255, 166, 77, 0.08), transparent 60%),
+      rgba(13, 13, 16, 0.85);
+    backdrop-filter: blur(20px);
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .final-cta::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.3;
+    mask-image: radial-gradient(circle at center, black 10%, transparent 65%);
+    -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 65%);
+  }
+  .final-cta > * { position: relative; z-index: 1; }
+  .final-cta .tiny {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--accent); text-transform: uppercase; letter-spacing: 0.18em;
+    margin-bottom: 22px;
+    padding: 6px 14px;
+    background: rgba(255, 106, 31, 0.08);
+    border: 1px solid rgba(255, 106, 31, 0.25);
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .final-cta h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 95, 'opsz' 96, 'wght' 600;
+    font-size: clamp(40px, 5.4vw, 74px);
+    line-height: 0.95; letter-spacing: -0.035em;
+    max-width: 900px; margin: 0 auto 24px;
+  }
+  .final-cta h2 .hi { color: var(--accent); }
+  .final-cta p {
+    font-size: 18px; color: var(--ink-dim);
+    max-width: 540px; margin: 0 auto 36px;
+  }
+  .final-cta .btn-primary { font-size: 16px; padding: 20px 36px; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 36px 28px; text-align: center;
+    border-top: 1px solid var(--line-2);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: var(--ink-dim);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    position: relative; z-index: 1;
+  }
+
+  /* Reveal */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 14px 18px; }
+    nav .tag { font-size: 10px; padding: 6px 10px; }
+    .hero { grid-template-columns: 1fr; padding: 110px 18px 40px; gap: 32px; }
+    .terminal { transform: none; }
+    .terminal:hover { transform: scale(1.01); }
+    .price-strip { grid-template-columns: 1fr; padding: 0 18px; }
+    section.deep { padding: 80px 18px; }
+    .section-head { grid-template-columns: 1fr; gap: 22px; margin-bottom: 50px; }
+    .steps { grid-template-columns: 1fr; }
+    .faq-wrap { grid-template-columns: 1fr; gap: 40px; }
+    .final-cta { padding: 50px 24px; margin-top: 70px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="#">
+    <img class="logo-mark" src="logo.svg" alt="Claude" width="34" height="34" />
+    <span>claude<span class="slash">/</span>grupos</span>
+  </a>
+  <div class="tag"><span class="dot"></span>vagas abertas · lote atual</div>
+</nav>
+
+<!-- ========== SECTION 1: HERO ========== -->
+<section class="hero">
+  <div>
+    <div class="eyebrow">método 10·1 · plano max 20x</div>
+
+    <h1 class="display">
+      <span class="hi">Claude Max 20x</span><br/>
+      <span class="thin">de</span> <span class="strike">R$ 1.100</span><br/>
+      por <span class="hi">R$ 110</span><span class="unit">/mês</span>
+    </h1>
+
+    <div class="hero-save">
+      <span class="arrow">→</span>
+      <span>você economiza</span>
+      <span class="pct">−90%</span>
+    </div>
+
+    <p class="lede">
+      Monto grupos de <b>10 pessoas</b> que dividem um plano <b>Max 20x</b> oficial.
+      Cada um loga no navegador, conecta na <b>sua IDE favorita</b> —
+      VS Code, Antigravity, Cursor ou terminal — e usa normalmente por <b>30 dias</b>.
+    </p>
+
+    <div class="cta-row">
+      <a href="#como-funciona" class="btn btn-primary">
+        Entenda o método
+        <span class="arrow">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+      <a href="#faq" class="btn btn-ghost">é golpe?</a>
+    </div>
+  </div>
+
+  <div class="terminal-wrap">
+    <div class="terminal">
+      <div class="term-head">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="title">~ /grupo-claude — bash</span>
+      </div>
+      <div class="term-body">
+        <div><span class="prompt">$</span> claude --plan=max-20x --seats=10</div>
+        <div class="comment"># validando grupo...</div>
+        <div><span class="ok">✓</span> plano: <span class="val">Max 20x</span></div>
+        <div><span class="ok">✓</span> pessoas: <span class="val">10</span></div>
+        <div><span class="ok">✓</span> por pessoa: <span class="val">R$ 110/mês</span></div>
+        <div><span class="ok">✓</span> acesso: <span class="val">30 dias</span></div>
+        <div><span class="ok">✓</span> IDE: <span class="val">vscode | antigravity | cursor | *</span></div>
+        <div class="comment"># sem ban. uso massivo liberado.</div>
+        <div><span class="prompt">$</span> <span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="price-strip reveal">
+  <div class="price-cell">
+    <div class="label">seu custo</div>
+    <div class="val"><span class="hi">R$ 110</span><span class="u">/mês</span></div>
+    <div class="sub">contra R$ 1.100 fechando sozinho</div>
+  </div>
+  <div class="price-cell">
+    <div class="label">acesso</div>
+    <div class="val">30<span class="u">dias</span></div>
+    <div class="sub">renova a cada ciclo do grupo</div>
+  </div>
+  <div class="price-cell">
+    <div class="label">economia</div>
+    <div class="val">90<span class="u">%</span></div>
+    <div class="sub">mesmo plano, mesmo tier</div>
+  </div>
+</div>
+
+<!-- ========== SECTION 2: HOW IT WORKS + FAQ + CTA ========== -->
+<section class="deep" id="como-funciona">
+  <div class="section-head reveal">
+    <div>
+      <div class="tag-mini">como funciona</div>
+      <h2 class="display">Três passos.<br/><span class="hi">Zero mistério.</span></h2>
+    </div>
+    <p>
+      Sem nuvem exótica, sem API pirata, sem VPN. Plano oficial,
+      comprado no fornecedor, dividido entre quem usa de verdade.
+    </p>
+  </div>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="num">01</div>
+      <h3>Você entra no grupo</h3>
+      <p>
+        Paga R$ 110 e garante sua vaga nos próximos 30 dias.
+        O grupo fecha com 10 pessoas e é ativado na hora.
+      </p>
+    </div>
+    <div class="step reveal">
+      <div class="num">02</div>
+      <h3>Loga no navegador</h3>
+      <p>
+        Mando as credenciais. Você faz login no painel da Claude
+        direto no Chrome ou Firefox. Leva 30 segundos.
+      </p>
+    </div>
+    <div class="step reveal">
+      <div class="num">03</div>
+      <h3>Conecta na sua IDE</h3>
+      <p>
+        VS Code, Antigravity, Cursor, terminal — qualquer uma.
+        A sessão cola automaticamente. Começa a codar.
+      </p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-wrap" id="faq">
+    <div class="faq-side reveal">
+      <div class="badge">perguntas reais</div>
+      <h3>Sem papo<br/>de <span class="hi">vendedor.</span></h3>
+      <p>
+        As três dúvidas que todo mundo manda antes de entrar.
+        Respondo tudo aqui — direto, sem rodeio.
+      </p>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="q">
+          <h4>Como você ganha dinheiro? Isso não é golpe?</h4>
+          <span class="toggle">+</span>
+        </div>
+        <div class="a">
+          <p>
+            <b>Não é golpe.</b> Eu compro o plano Max 20x direto no fornecedor oficial
+            da Claude por um valor menor que o de mercado — porque compro em volume
+            e pago com câmbio parceiro. O plano custa R$ 1.100 pra você sozinho,
+            mas meu custo é menor.
+          </p>
+          <p>
+            A diferença entre o que o grupo paga e meu custo é
+            <b>o meu troco pelo gerenciamento</b>: formar o grupo, distribuir
+            credenciais, dar suporte, resolver bug de login.
+          </p>
+          <div class="callout">
+            você paga R$ 110 → recebe Max 20x oficial → eu ganho o spread do fornecedor. todo mundo ganha.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="q">
+          <h4>Os tokens não acabam rápido com 10 pessoas usando?</h4>
+          <span class="toggle">+</span>
+        </div>
+        <div class="a">
+          <p>
+            <b>Não.</b> O plano <b>Max 20x</b> é exatamente o tier
+            desenhado pra <b>uso massivo e simultâneo</b> — é o mais alto
+            que a Claude vende. Foi feito pra times, agências e operações pesadas.
+          </p>
+          <p>
+            Com 10 pessoas dividindo, cada um ainda usa muito mais do que
+            num plano individual básico, porque o pool é <b>20x maior</b>.
+            Ninguém bate rate limit.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="q">
+          <h4>Isso não dá ban na conta?</h4>
+          <span class="toggle">+</span>
+        </div>
+        <div class="a">
+          <p>
+            <b>Não dá ban.</b> Este método foi <b>sugerido pelo próprio suporte</b>
+            da Claude para países de baixa renda — é assim que eles viabilizam
+            o plano em regiões onde o valor cheio é inviável. Compartilhamento
+            de plano familiar/team é permitido dentro das regras oficiais.
+          </p>
+          <div class="callout">
+            método oficial · sem VPN · sem conta fake · sem risco de banimento.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="q">
+          <h4>Posso usar qualquer IDE?</h4>
+          <span class="toggle">+</span>
+        </div>
+        <div class="a">
+          <p>
+            <b>Qualquer uma.</b> Todo mundo loga primeiro no navegador
+            e depois cada pessoa vai pra ferramenta preferida.
+            <b>VS Code, Antigravity, Cursor, terminal puro, JetBrains</b> —
+            o que você já usa hoje continua funcionando igual.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="q">
+          <h4>E depois dos 30 dias?</h4>
+          <span class="toggle">+</span>
+        </div>
+        <div class="a">
+          <p>
+            Você renova a vaga no próximo ciclo pelos mesmos R$ 110.
+            Se quiser sair, sai — sem fidelidade, sem multa.
+            Quem fica tem prioridade pra manter o assento no grupo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA → QUIZ -->
+  <div class="final-cta reveal">
+    <div class="tiny">próximo passo · 60 segundos</div>
+    <h2 class="display">Vê se você <span class="hi">se encaixa</span><br/>no próximo grupo.</h2>
+    <p>
+      4 perguntas rápidas e eu já te mando sua vaga direto no WhatsApp.
+    </p>
+    <a href="quiz.html" class="btn btn-primary">
+      Quero fazer parte dos grupos
+      <span class="arrow">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  claude/grupos · método 10·1 · contato via whatsapp
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+<script src="mascot.js"></script>
+
+</body>
+</html>

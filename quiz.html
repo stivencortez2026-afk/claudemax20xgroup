@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz · Vaga no próximo grupo Claude</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #15151b;
+    --bg-1: #1c1c23;
+    --bg-2: #24242c;
+    --ink: #f0eeeb;
+    --ink-dim: #9a938b;
+    --ink-faint: #55524f;
+    --line: #30303a;
+    --line-2: #232329;
+    --accent: #ff6a1f;
+    --accent-2: #ffa64d;
+    --accent-3: #8b5cf6;
+    --success: #25d366;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Geist', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    letter-spacing: -0.005em;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(1000px 700px at 90% 0%, rgba(255, 106, 31, 0.08), transparent 60%),
+      radial-gradient(800px 600px at 0% 80%, rgba(139, 92, 246, 0.08), transparent 60%),
+      radial-gradient(600px 500px at 50% 50%, rgba(255, 166, 77, 0.05), transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.035; pointer-events: none; z-index: 100; mix-blend-mode: overlay;
+  }
+
+  .display {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 95, 'opsz' 96, 'wght' 550;
+    letter-spacing: -0.035em; line-height: 0.94;
+  }
+
+  /* HEADER */
+  header {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--line-2);
+    display: flex; align-items: center; justify-content: space-between;
+    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(7, 7, 8, 0.65);
+    position: sticky; top: 0; z-index: 10;
+  }
+  header .brand {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 85, 'wght' 700;
+    font-size: 22px; letter-spacing: -0.04em;
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: inherit;
+  }
+  header .brand .logo-mark {
+    width: 32px; height: 32px; flex-shrink: 0;
+    display: block;
+    filter: drop-shadow(0 4px 10px rgba(255, 106, 31, 0.35));
+    transition: transform 0.4s cubic-bezier(.2,.9,.3,1);
+  }
+  header .brand:hover .logo-mark { transform: rotate(30deg) scale(1.06); }
+  header .brand .slash { color: var(--accent); font-weight: 400; }
+  header .step-count {
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.12em;
+    padding: 7px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.03);
+  }
+  header .step-count span { color: var(--accent); font-weight: 500; }
+
+  .progress-bar {
+    height: 2px; background: var(--line-2); position: relative; z-index: 9;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-3), var(--accent));
+    width: 20%; transition: width 0.55s cubic-bezier(.2,.9,.3,1);
+    box-shadow: 0 0 20px var(--accent);
+  }
+
+  main {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    padding: 60px 28px;
+    position: relative; z-index: 1;
+  }
+
+  .step {
+    width: 100%; max-width: 780px;
+    display: none;
+    animation: fadeUp 0.55s cubic-bezier(.2,.9,.3,1);
+  }
+  .step.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em;
+    margin-bottom: 22px;
+    padding: 6px 12px;
+    background: rgba(255, 106, 31, 0.06);
+    border: 1px solid rgba(255, 106, 31, 0.22);
+    border-radius: 999px;
+    font-weight: 500;
+  }
+  .q-label::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 10px var(--accent);
+  }
+
+  .q-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 95, 'opsz' 96, 'wght' 600;
+    font-size: clamp(34px, 5.2vw, 60px);
+    line-height: 0.98; letter-spacing: -0.035em;
+    margin-bottom: 18px;
+  }
+  .q-title .hi { color: var(--accent); }
+
+  .q-sub {
+    color: var(--ink-dim); font-size: 17px;
+    max-width: 560px; margin-bottom: 40px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px 22px;
+    background: linear-gradient(180deg, rgba(21, 21, 26, 0.7), rgba(13, 13, 16, 0.5));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(.2,.9,.3,1);
+    font-family: 'Geist', sans-serif;
+    font-size: 16px; color: var(--ink); font-weight: 500;
+    text-align: left;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    position: relative; overflow: hidden;
+  }
+  .option::before {
+    content: ''; position: absolute; top: 0; left: 24px; right: 24px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .option:hover {
+    border-color: rgba(255, 106, 31, 0.4);
+    transform: translateX(4px);
+  }
+  .option:hover::before { opacity: 1; }
+  .option .key {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px; font-weight: 600;
+    width: 30px; height: 30px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-dim);
+    flex-shrink: 0;
+    transition: all 0.25s;
+    background: rgba(255,255,255,0.02);
+  }
+  .option:hover .key {
+    border-color: var(--accent); color: var(--accent);
+    background: rgba(255, 106, 31, 0.08);
+    box-shadow: 0 0 0 3px rgba(255, 106, 31, 0.1);
+  }
+  .option.selected {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(255, 106, 31, 0.08), rgba(255, 106, 31, 0.02));
+  }
+  .option.selected .key {
+    background: var(--accent); color: #0a0a0a; border-color: var(--accent);
+  }
+  .option .ico {
+    margin-left: auto;
+    color: var(--ink-dim); font-size: 16px;
+    opacity: 0; transition: all 0.25s;
+    transform: translateX(-4px);
+  }
+  .option:hover .ico {
+    opacity: 1; color: var(--accent);
+    transform: translateX(0);
+  }
+
+  /* Input */
+  .input-field {
+    width: 100%;
+    padding: 20px 24px;
+    background: linear-gradient(180deg, rgba(21, 21, 26, 0.7), rgba(13, 13, 16, 0.5));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    font-family: 'Geist', sans-serif;
+    font-size: 18px; color: var(--ink); font-weight: 500;
+    outline: none;
+    transition: all 0.25s;
+    backdrop-filter: blur(10px);
+  }
+  .input-field::placeholder { color: var(--ink-faint); font-weight: 400; }
+  .input-field:focus {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(255, 106, 31, 0.06), rgba(21, 21, 26, 0.6));
+    box-shadow: 0 0 0 4px rgba(255, 106, 31, 0.08);
+  }
+
+  .nav-row {
+    margin-top: 36px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 28px;
+    font-family: 'Geist', sans-serif; font-size: 15px;
+    font-weight: 600; letter-spacing: -0.01em;
+    text-decoration: none; border: none; cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.3s cubic-bezier(.2,.9,.3,1);
+  }
+  .btn-primary {
+    background: var(--accent); color: #0a0a0a;
+    box-shadow: 0 0 0 1px var(--accent), 0 20px 50px -15px rgba(255, 106, 31, 0.5);
+  }
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px var(--accent), 0 30px 60px -15px rgba(255, 106, 31, 0.7);
+  }
+  .btn-primary:disabled {
+    opacity: 0.35; cursor: not-allowed;
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .btn-primary .arrow {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.15); border-radius: 50%;
+    transition: transform 0.3s;
+  }
+  .btn-primary:not(:disabled):hover .arrow { transform: translateX(3px) rotate(-45deg); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.03); color: var(--ink-dim);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(10px);
+  }
+  .btn-ghost:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+  /* ========== FINAL STEP · editorial confirmation ========== */
+  #step-final {
+    text-align: center;
+    position: relative;
+    padding: 8px 0;
+  }
+  #step-final::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%;
+    width: 820px; height: 560px;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(ellipse at 35% 38%, rgba(37, 211, 102, 0.16), transparent 55%),
+      radial-gradient(ellipse at 68% 62%, rgba(255, 106, 31, 0.11), transparent 55%);
+    filter: blur(44px);
+    pointer-events: none; z-index: -1;
+    animation: floatGlow 9s ease-in-out infinite alternate;
+  }
+  @keyframes floatGlow {
+    0%   { transform: translateX(-50%) translateY(0) scale(1); opacity: 0.8; }
+    100% { transform: translateX(-50%) translateY(-22px) scale(1.04); opacity: 1; }
+  }
+
+  /* staggered reveal for every direct block child */
+  #step-final.active > * {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: rise 0.6s cubic-bezier(.2,.9,.3,1) forwards;
+  }
+  #step-final.active > *:nth-child(1) { animation-delay: 0.00s; }
+  #step-final.active > *:nth-child(2) { animation-delay: 0.08s; }
+  #step-final.active > *:nth-child(3) { animation-delay: 0.16s; }
+  #step-final.active > *:nth-child(4) { animation-delay: 0.24s; }
+  #step-final.active > *:nth-child(5) { animation-delay: 0.32s; }
+  #step-final.active > *:nth-child(6) { animation-delay: 0.40s; }
+  #step-final.active > *:nth-child(7) { animation-delay: 0.48s; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+
+  /* reservation id · editorial micro-detail */
+  .res-id {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Geist Mono', monospace; font-size: 10.5px;
+    color: var(--ink-faint); letter-spacing: 0.16em; text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .res-id::before, .res-id::after {
+    content: ''; width: 28px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2));
+  }
+  .res-id::after { background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent); }
+  .res-id .dot { color: var(--success); }
+
+  .seal {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 500;
+    color: var(--success); text-transform: uppercase; letter-spacing: 0.18em;
+    margin-bottom: 30px;
+    padding: 9px 18px 9px 10px;
+    background: rgba(37, 211, 102, 0.08);
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    border-radius: 999px;
+    box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.04), 0 10px 30px -10px rgba(37, 211, 102, 0.3);
+  }
+  .seal .check {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--success); color: #0b0b0b;
+    border-radius: 999px;
+    box-shadow: 0 0 14px rgba(37, 211, 102, 0.6);
+    animation: sealPop 1.8s cubic-bezier(.2,.9,.3,1) infinite;
+  }
+  .seal .check svg { width: 10px; height: 10px; }
+  @keyframes sealPop {
+    0%, 70%, 100% { transform: scale(1); }
+    40%           { transform: scale(1.15); }
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+  .final-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 94, 'opsz' 96, 'wght' 580;
+    font-size: clamp(38px, 5.6vw, 68px);
+    line-height: 1.02; letter-spacing: -0.035em;
+    margin-bottom: 20px;
+    max-width: 720px; margin-left: auto; margin-right: auto;
+  }
+  .final-title .hi {
+    color: var(--accent);
+    background: linear-gradient(100deg, var(--accent) 0%, #ffb37a 50%, var(--accent) 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 6s linear infinite;
+  }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  .final-sub {
+    color: var(--ink-dim); font-size: 16.5px; max-width: 520px;
+    margin: 0 auto 48px; line-height: 1.6;
+  }
+
+  /* ========== receipt / boarding-pass ========== */
+  .receipt {
+    max-width: 640px;
+    margin: 0 auto 48px;
+    padding: 4px;
+    background: linear-gradient(180deg, rgba(24, 24, 28, 0.85), rgba(13, 13, 16, 0.55));
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    backdrop-filter: blur(14px);
+    position: relative;
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.6);
+  }
+  .receipt::before {
+    content: ''; position: absolute; top: -1px; left: 24px; right: 24px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 106, 31, 0.5), transparent);
+  }
+  .receipt-row {
+    display: grid; grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    align-items: stretch;
+  }
+  .receipt-col {
+    padding: 22px 20px;
+    text-align: left;
+    transition: background 0.3s;
+  }
+  .receipt-col:hover { background: rgba(255, 106, 31, 0.04); }
+  .receipt-col .lbl {
+    display: flex; align-items: center; gap: 7px;
+    font-family: 'Geist Mono', monospace; font-size: 10px;
+    color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.16em;
+    margin-bottom: 10px;
+  }
+  .receipt-col .lbl .ico { width: 12px; height: 12px; color: var(--accent); opacity: 0.9; }
+  .receipt-col .val {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 90, 'opsz' 96, 'wght' 600;
+    font-size: 24px; letter-spacing: -0.025em; line-height: 1;
+  }
+  .receipt-col .val .hi { color: var(--accent); }
+  .receipt-div {
+    background-image: linear-gradient(180deg, transparent 0%, transparent 22%, var(--line) 22%, var(--line) 78%, transparent 78%);
+    background-size: 1px 8px;
+    background-repeat: repeat-y;
+    background-position: center top;
+  }
+
+  /* ========== CTA block ========== */
+  .cta-block {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 18px; margin: 0 auto;
+  }
+
+  .btn-wa {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 22px 44px 22px 38px;
+    background: linear-gradient(180deg, #2adc6d 0%, var(--success) 100%);
+    color: white;
+    font-family: 'Geist', sans-serif;
+    font-size: 16px; font-weight: 700;
+    text-decoration: none;
+    border-radius: 999px;
+    transition: all 0.3s cubic-bezier(.2,.9,.3,1);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.25),
+      0 0 0 1px rgba(37, 211, 102, 0.6),
+      0 0 0 6px rgba(37, 211, 102, 0.08),
+      0 25px 60px -15px rgba(37, 211, 102, 0.6);
+    position: relative;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+  }
+  .btn-wa::before {
+    content: ''; position: absolute; inset: 0;
+    border-radius: 999px;
+    background: radial-gradient(circle at 50% 100%, rgba(255,255,255,0.28), transparent 60%);
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .btn-wa::after {
+    content: ''; position: absolute; inset: -6px;
+    border-radius: 999px; border: 2px solid rgba(37, 211, 102, 0.45);
+    animation: waRing 2.2s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes waRing {
+    0%   { transform: scale(0.95); opacity: 0.6; }
+    80%  { transform: scale(1.14); opacity: 0; }
+    100% { transform: scale(1.14); opacity: 0; }
+  }
+  .btn-wa:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.3),
+      0 0 0 1px rgba(37, 211, 102, 0.7),
+      0 0 0 8px rgba(37, 211, 102, 0.14),
+      0 35px 70px -15px rgba(37, 211, 102, 0.8);
+  }
+  .btn-wa:hover::before { opacity: 1; }
+  .btn-wa .wa-ico { width: 22px; height: 22px; position: relative; z-index: 1; }
+  .btn-wa .arrow {
+    display: inline-flex; position: relative; z-index: 1;
+    transition: transform 0.3s;
+    font-size: 18px; font-weight: 600;
+    margin-left: 2px;
+  }
+  .btn-wa:hover .arrow { transform: translateX(4px); }
+
+  .scarcity {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 500;
+    color: var(--accent-2);
+    padding: 9px 16px;
+    background: rgba(255, 166, 77, 0.08);
+    border: 1px solid rgba(255, 166, 77, 0.3);
+    border-radius: 999px;
+    box-shadow: 0 0 0 4px rgba(255, 166, 77, 0.03);
+  }
+  .scarcity::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-2); box-shadow: 0 0 10px var(--accent-2);
+    animation: pulse 1.5s infinite;
+  }
+
+  /* ========== next steps stepper ========== */
+  .next-steps {
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 56px auto 0;
+    padding: 18px 24px;
+    max-width: 640px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.015));
+  }
+  .ns-title {
+    font-family: 'Geist Mono', monospace; font-size: 10px;
+    color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.2em;
+    width: 100%; margin-bottom: 6px;
+  }
+  .ns-item {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: 'Geist', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .ns-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 999px;
+    background: rgba(255, 106, 31, 0.1);
+    border: 1px solid rgba(255, 106, 31, 0.4);
+    color: var(--accent);
+    font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600;
+  }
+  .ns-arrow {
+    color: var(--ink-faint); font-size: 13px;
+    opacity: 0.6;
+  }
+
+  .fineprint {
+    margin-top: 32px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: var(--ink-faint);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px; flex-wrap: wrap;
+  }
+  .fineprint .sep {
+    width: 4px; height: 4px; border-radius: 50%; background: var(--ink-faint); opacity: 0.5;
+  }
+
+  @media (max-width: 620px) {
+    .receipt-row { grid-template-columns: 1fr; }
+    .receipt-div { display: none; }
+    .receipt-col { border-bottom: 1px solid var(--line); }
+    .receipt-col:last-child { border-bottom: 0; }
+    .next-steps { gap: 10px; padding: 16px 18px; }
+    .ns-arrow { display: none; }
+  }
+
+  @media (max-width: 720px) {
+    header { padding: 14px 18px; }
+    main { padding: 40px 18px; }
+    .summary { grid-template-columns: 1fr; }
+    .nav-row { flex-direction: column-reverse; gap: 14px; align-items: stretch; }
+    .btn, .btn-primary, .btn-ghost { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="index.html">
+    <img class="logo-mark" src="logo.svg" alt="Claude" width="32" height="32" />
+    <span>claude<span class="slash">/</span>grupos</span>
+  </a>
+  <div class="step-count">etapa <span id="stepNum">1</span> / 5</div>
+</header>
+<div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+
+<main>
+
+  <!-- STEP 1 -->
+  <div class="step active" data-step="1">
+    <div class="q-label">pergunta 01</div>
+    <h2 class="q-title">Você já <span class="hi">usa</span> alguma IA pra programar hoje?</h2>
+    <p class="q-sub">Pra eu entender de onde você está partindo.</p>
+    <div class="options">
+      <button class="option" data-answer="Uso Claude/ChatGPT direto no browser"><span class="key">A</span>Uso Claude / ChatGPT direto no browser<span class="ico">→</span></button>
+      <button class="option" data-answer="Uso Cursor, Copilot ou algo integrado à IDE"><span class="key">B</span>Uso Cursor, Copilot ou algo integrado à IDE<span class="ico">→</span></button>
+      <button class="option" data-answer="Já testei mas não uso diariamente"><span class="key">C</span>Já testei mas não uso no dia a dia<span class="ico">→</span></button>
+      <button class="option" data-answer="Nunca usei, quero começar"><span class="key">D</span>Nunca usei — quero começar agora<span class="ico">→</span></button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" data-step="2">
+    <div class="q-label">pergunta 02</div>
+    <h2 class="q-title">Quanto você <span class="hi">paga</span> por mês hoje em IA?</h2>
+    <p class="q-sub">Sem julgamento. É pra eu te mostrar o quanto você economiza.</p>
+    <div class="options">
+      <button class="option" data-answer="Nada ainda"><span class="key">A</span>Nada ainda — uso só a versão grátis<span class="ico">→</span></button>
+      <button class="option" data-answer="Entre R$ 100 e R$ 300"><span class="key">B</span>Entre R$ 100 e R$ 300<span class="ico">→</span></button>
+      <button class="option" data-answer="Entre R$ 300 e R$ 800"><span class="key">C</span>Entre R$ 300 e R$ 800<span class="ico">→</span></button>
+      <button class="option" data-answer="Mais de R$ 800 por mês"><span class="key">D</span>Mais de R$ 800 — preciso do tier alto<span class="ico">→</span></button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" data-step="3">
+    <div class="q-label">pergunta 03</div>
+    <h2 class="q-title">Qual <span class="hi">IDE</span> você vai querer usar?</h2>
+    <p class="q-sub">Só pra confirmar compatibilidade — spoiler: funciona em todas.</p>
+    <div class="options">
+      <button class="option" data-answer="VS Code"><span class="key">A</span>VS Code<span class="ico">→</span></button>
+      <button class="option" data-answer="Antigravity"><span class="key">B</span>Antigravity<span class="ico">→</span></button>
+      <button class="option" data-answer="Cursor"><span class="key">C</span>Cursor<span class="ico">→</span></button>
+      <button class="option" data-answer="Terminal puro ou outra IDE"><span class="key">D</span>Terminal puro / outra IDE<span class="ico">→</span></button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step" data-step="4">
+    <div class="q-label">pergunta 04</div>
+    <h2 class="q-title">Você <span class="hi">entendeu</span> como o grupo funciona?</h2>
+    <p class="q-sub">Plano Max 20x oficial · 10 pessoas · R$ 110 cada · 30 dias · sem ban.</p>
+    <div class="options">
+      <button class="option" data-answer="Sim, entendi tudo e quero entrar"><span class="key">A</span>Sim, entendi tudo e quero entrar agora<span class="ico">→</span></button>
+      <button class="option" data-answer="Entendi a ideia, mas quero tirar uma dúvida no WhatsApp"><span class="key">B</span>Entendi, mas quero tirar 1 dúvida no zap<span class="ico">→</span></button>
+      <button class="option" data-answer="Quero entrar no próximo grupo disponível"><span class="key">C</span>Quero entrar no próximo grupo disponível<span class="ico">→</span></button>
+    </div>
+  </div>
+
+  <!-- STEP 5: NAME -->
+  <div class="step" data-step="5">
+    <div class="q-label">última etapa</div>
+    <h2 class="q-title">Qual é o <span class="hi">seu nome?</span></h2>
+    <p class="q-sub">Pra eu te chamar certinho no WhatsApp e já reservar sua vaga.</p>
+    <input type="text" id="nameInput" class="input-field" placeholder="ex. Stiven" autocomplete="given-name" />
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="goBack()">← voltar</button>
+      <button class="btn btn-primary" id="finishBtn" disabled onclick="finishQuiz()">
+        ver minha vaga
+        <span class="arrow">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M2 8L8 2M8 2H3M8 2V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="step" data-step="final" id="step-final">
+    <div class="res-id"><span class="dot">●</span> reserva <span id="resId">#CLD-0000</span></div>
+
+    <div class="seal">
+      <span class="check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </span>
+      vaga pré-aprovada
+    </div>
+
+    <h2 class="final-title">Beleza, <span class="hi" id="finalName">dev</span>.<br/>Sua vaga <span class="hi">está guardada.</span></h2>
+
+    <p class="final-sub">
+      Chama agora no WhatsApp. Eu já te mando o link de pagamento,
+      as credenciais e o passo-a-passo pra conectar na sua IDE em menos de 5 minutos.
+    </p>
+
+    <div class="receipt">
+      <div class="receipt-row">
+        <div class="receipt-col">
+          <div class="lbl">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            plano
+          </div>
+          <div class="val">Max <span class="hi">20x</span></div>
+        </div>
+        <div class="receipt-div"></div>
+        <div class="receipt-col">
+          <div class="lbl">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+            </svg>
+            seu valor
+          </div>
+          <div class="val"><span class="hi">R$ 110</span>/mês</div>
+        </div>
+        <div class="receipt-div"></div>
+        <div class="receipt-col">
+          <div class="lbl">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            acesso
+          </div>
+          <div class="val">30 <span class="hi">dias</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-block">
+      <a id="waBtn" href="#" target="_blank" rel="noopener" class="btn-wa">
+        <svg class="wa-ico" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Chamar no WhatsApp
+        <span class="arrow">→</span>
+      </a>
+
+      <div class="scarcity">restam poucas vagas no grupo atual</div>
+    </div>
+
+    <div class="next-steps">
+      <div class="ns-title">o que acontece em seguida</div>
+      <span class="ns-item"><span class="ns-num">1</span> link de pagamento</span>
+      <span class="ns-arrow">→</span>
+      <span class="ns-item"><span class="ns-num">2</span> credenciais</span>
+      <span class="ns-arrow">→</span>
+      <span class="ns-item"><span class="ns-num">3</span> conecta na IDE</span>
+    </div>
+
+    <div class="fineprint">
+      <span>resposta em até 10 min</span>
+      <span class="sep"></span>
+      <span>seg–sáb</span>
+      <span class="sep"></span>
+      <span>09h–21h</span>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // ====== CONFIGURAÇÃO ======
+  const WHATSAPP_NUMBER = '5541987433081';
+  // ==========================
+
+  const TOTAL_STEPS = 5;
+  const state = {
+    current: 1,
+    answers: { q1: null, q2: null, q3: null, q4: null, name: '' }
+  };
+
+  const stepNumEl = document.getElementById('stepNum');
+  const progressEl = document.getElementById('progressFill');
+  const nameInput = document.getElementById('nameInput');
+  const finishBtn = document.getElementById('finishBtn');
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    if (n === 'final') {
+      document.getElementById('step-final').classList.add('active');
+      progressEl.style.width = '100%';
+      stepNumEl.textContent = TOTAL_STEPS;
+    } else {
+      document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
+      progressEl.style.width = (n / TOTAL_STEPS * 100) + '%';
+      stepNumEl.textContent = n;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.step[data-step]').forEach(stepEl => {
+    const stepIdx = stepEl.dataset.step;
+    if (stepIdx === '5' || stepIdx === 'final') return;
+    stepEl.querySelectorAll('.option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        stepEl.querySelectorAll('.option').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state.answers[`q${stepIdx}`] = btn.dataset.answer;
+        setTimeout(() => {
+          state.current = parseInt(stepIdx) + 1;
+          showStep(state.current);
+        }, 280);
+      });
+    });
+  });
+
+  nameInput.addEventListener('input', () => {
+    const v = nameInput.value.trim();
+    state.answers.name = v;
+    finishBtn.disabled = v.length < 2;
+  });
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !finishBtn.disabled) finishQuiz();
+  });
+
+  function goBack() {
+    if (state.current > 1) {
+      state.current--;
+      showStep(state.current);
+    }
+  }
+
+  function finishQuiz() {
+    const name = state.answers.name || 'dev';
+    document.getElementById('finalName').textContent = name;
+
+    const msg = buildWhatsAppMessage();
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    document.getElementById('waBtn').href = url;
+
+    const n = Math.floor(1000 + Math.random() * 8999);
+    const suffix = String.fromCharCode(65 + Math.floor(Math.random() * 26)) +
+                   Math.floor(Math.random() * 10);
+    document.getElementById('resId').textContent = `#CLD-${n}-${suffix}`;
+
+    showStep('final');
+  }
+
+  function buildWhatsAppMessage() {
+    const a = state.answers;
+    return [
+      `Olá! Sou ${a.name} e quero entrar no próximo grupo Claude 🚀`,
+      ``,
+      `Respondi o quiz:`,
+      `• IA hoje: ${a.q1 || '-'}`,
+      `• Gasto mensal atual: ${a.q2 || '-'}`,
+      `• IDE preferida: ${a.q3 || '-'}`,
+      `• Situação: ${a.q4 || '-'}`,
+      ``,
+      `Pode me mandar o link de pagamento e as instruções?`
+    ].join('\n');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    const active = document.querySelector('.step.active');
+    if (!active) return;
+    const key = e.key.toUpperCase();
+    const idx = { A: 0, B: 1, C: 2, D: 3 }[key];
+    if (idx === undefined) return;
+    const options = active.querySelectorAll('.option');
+    if (options[idx]) options[idx].click();
+  });
+</script>
+<script src="mascot.js"></script>
+
+</body>
+</html>
