@@ -66,42 +66,141 @@
   .top-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 60;
     display: flex; justify-content: center; align-items: center;
-    gap: 10px; flex-wrap: wrap;
-    padding: 9px 20px;
-    font-family: 'Geist Mono', monospace;
-    font-size: 11.5px;
-    letter-spacing: 0.05em;
-    color: #0a0e0c;
-    background: linear-gradient(90deg, #ff8a3d 0%, #ff6a1f 50%, #ff8a3d 100%);
-    background-size: 200% 100%;
-    animation: shine 6s linear infinite;
-    border-bottom: 1px solid rgba(0,0,0,0.15);
+    gap: 14px; flex-wrap: wrap;
+    padding: 10px 24px;
+    font-family: 'Geist', 'Inter', sans-serif;
+    font-size: 13px;
+    letter-spacing: -0.005em;
+    color: rgba(255, 240, 228, 0.92);
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(255, 106, 31, 0.18), transparent 60%),
+      radial-gradient(ellipse at 80% 50%, rgba(255, 138, 61, 0.14), transparent 60%),
+      linear-gradient(180deg, #0f0b08 0%, #0a0705 100%);
+    border-bottom: 1px solid rgba(255, 106, 31, 0.22);
     text-align: center;
-    line-height: 1.35;
+    line-height: 1.4;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 8px 24px -8px rgba(255, 106, 31, 0.25);
+    overflow: hidden;
   }
-  @keyframes shine {
-    from { background-position: 0% 0%; }
-    to { background-position: 200% 0%; }
+  .top-bar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 170, 110, 0.12),
+      transparent);
+    animation: tb-sweep 5s ease-in-out infinite;
   }
+  .top-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 106, 31, 0.6) 30%,
+      rgba(255, 170, 110, 0.7) 50%,
+      rgba(255, 106, 31, 0.6) 70%,
+      transparent);
+  }
+  @keyframes tb-sweep {
+    0% { left: -100%; }
+    55%, 100% { left: 160%; }
+  }
+
   .top-bar .tb-flash {
-    font-weight: 700;
-    letter-spacing: 0.18em;
+    position: relative;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    padding: 2px 8px;
-    background: rgba(0,0,0,0.85);
-    color: #ffb07a;
-    border-radius: 4px;
+    padding: 3px 10px 3px 22px;
+    background: linear-gradient(135deg, rgba(255, 106, 31, 0.18), rgba(255, 106, 31, 0.08));
+    color: #ffaa6e;
+    border: 1px solid rgba(255, 106, 31, 0.45);
+    border-radius: 999px;
     font-size: 10px;
+    box-shadow: 0 0 18px -4px rgba(255, 106, 31, 0.5);
   }
-  .top-bar b { font-weight: 700; }
+  .top-bar .tb-flash::before {
+    content: '';
+    position: absolute;
+    left: 9px; top: 50%;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #ff8a3d;
+    box-shadow: 0 0 10px #ff6a1f, 0 0 20px rgba(255, 106, 31, 0.4);
+    transform: translateY(-50%);
+    animation: tb-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes tb-pulse {
+    0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+    50% { opacity: 0.55; transform: translateY(-50%) scale(0.7); }
+  }
+
+  .top-bar .tb-text { display: inline-flex; align-items: center; gap: 8px; }
+  .top-bar .tb-spark {
+    display: inline-block;
+    color: #ffaa6e;
+    font-size: 12px;
+    animation: tb-sparkle 2.4s ease-in-out infinite;
+  }
+  @keyframes tb-sparkle {
+    0%, 100% { opacity: 0.45; transform: scale(0.9) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.15) rotate(12deg); }
+  }
+  .top-bar .tb-model {
+    font-weight: 600;
+    background: linear-gradient(90deg, #ffb37a, #ff6a1f, #ffb37a);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: tb-grad 4s linear infinite;
+    letter-spacing: -0.01em;
+  }
+  @keyframes tb-grad {
+    from { background-position: 0% center; }
+    to { background-position: 200% center; }
+  }
+  .top-bar .tb-dim { color: rgba(255, 240, 228, 0.66); }
+
   .top-bar .tb-cta {
-    color: #0a0e0c;
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
+    position: relative;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #0a0705;
+    background: linear-gradient(135deg, #ffb37a 0%, #ff8a3d 50%, #ff6a1f 100%);
+    padding: 6px 14px 6px 16px;
+    border-radius: 999px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
     font-weight: 700;
+    text-decoration: none;
+    border: 1px solid rgba(255, 200, 150, 0.4);
+    box-shadow:
+      0 0 0 0 rgba(255, 106, 31, 0.6),
+      0 4px 14px -4px rgba(255, 106, 31, 0.6);
+    transition: transform 0.3s cubic-bezier(.2,.9,.3,1), box-shadow 0.3s;
   }
-  .top-bar .tb-cta:hover { text-decoration-thickness: 3px; }
+  .top-bar .tb-cta .tb-arrow {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(.2,.9,.3,1);
+  }
+  .top-bar .tb-cta:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 0 4px rgba(255, 106, 31, 0.18),
+      0 8px 22px -4px rgba(255, 106, 31, 0.75);
+  }
+  .top-bar .tb-cta:hover .tb-arrow { transform: translateX(3px); }
 
   /* ===== NAV ===== */
   nav {
@@ -631,9 +730,18 @@
     }
     nav .tag .dot { width: 5px; height: 5px; }
 
-    .hero { padding: 136px 16px 28px; gap: 24px; }
-    .top-bar { font-size: 10.5px; padding: 8px 14px; gap: 7px; }
-    .top-bar .tb-flash { font-size: 9.5px; padding: 2px 7px; }
+    .hero { padding: 142px 16px 28px; gap: 24px; }
+    .top-bar {
+      font-size: 11.5px; padding: 8px 14px; gap: 8px;
+      line-height: 1.3;
+    }
+    .top-bar .tb-flash {
+      font-size: 9px; padding: 2px 8px 2px 18px;
+      letter-spacing: 0.12em;
+    }
+    .top-bar .tb-flash::before { left: 7px; width: 5px; height: 5px; }
+    .top-bar .tb-cta { font-size: 9.5px; padding: 5px 11px 5px 13px; }
+    .top-bar .tb-dim { display: none; }
     .eyebrow {
       font-size: 10px; padding: 6px 12px;
       margin-bottom: 18px; letter-spacing: 0.12em;
@@ -711,9 +819,17 @@
     nav .tag { display: none; }
     nav { padding: 12px 14px; }
 
-    .hero { padding: 128px 14px 22px; }
-    .top-bar { font-size: 9.5px; letter-spacing: 0.02em; }
-    .top-bar .tb-cta { font-size: 10px; }
+    .hero { padding: 132px 14px 22px; }
+    .top-bar {
+      font-size: 10.5px; gap: 6px;
+      padding: 7px 10px;
+    }
+    .top-bar .tb-flash { font-size: 8.5px; }
+    .top-bar .tb-spark { font-size: 10px; }
+    .top-bar .tb-cta {
+      font-size: 9px; padding: 4px 9px 4px 11px;
+      letter-spacing: 0.07em;
+    }
     h1.display { font-size: clamp(28px, 11vw, 38px); }
     .hero-save { font-size: 10.5px; }
 
@@ -981,9 +1097,16 @@
 <body>
 
 <div class="top-bar">
-  <span class="tb-flash">novo</span>
-  <span><b>Opus 4.7 acabou de sair</b> — não fique pra trás enquanto o time todo migra.</span>
-  <a href="quiz.html" class="tb-cta">garantir vaga →</a>
+  <span class="tb-flash">acabou de sair</span>
+  <span class="tb-text">
+    <span class="tb-spark">✦</span>
+    <span class="tb-model">Claude Opus 4.7</span>
+    <span class="tb-dim">— o time tá migrando agora.</span>
+  </span>
+  <a href="quiz.html" class="tb-cta">
+    <span>garantir minha vaga</span>
+    <span class="tb-arrow">→</span>
+  </a>
 </div>
 
 <nav>
