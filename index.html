@@ -564,6 +564,250 @@
     .steps { grid-template-columns: 1fr; }
     .faq-wrap { grid-template-columns: 1fr; gap: 40px; }
     .final-cta { padding: 50px 24px; margin-top: 70px; }
+    .proof-grid { grid-template-columns: 1fr !important; }
+    .chat-card.span-2 { grid-column: span 1 !important; }
+  }
+
+  /* ===== SOCIAL PROOF · chat style ===== */
+  .proof-wrap {
+    margin: 0 0 100px;
+    position: relative;
+  }
+  .proof-wrap::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: 50%;
+    width: 600px; height: 400px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(37, 211, 102, 0.08), transparent 60%);
+    filter: blur(40px);
+    pointer-events: none; z-index: -1;
+  }
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  /* ----- image-based proof grid ----- */
+  .proof-grid-img {
+    grid-template-columns: repeat(12, 1fr);
+    gap: 22px;
+    align-items: start;
+  }
+  .proof-shot {
+    position: relative;
+    margin: 0;
+    grid-column: span 6;
+    border-radius: 22px;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(18, 22, 20, 0.9), rgba(10, 14, 12, 0.85));
+    border: 1px solid var(--line);
+    padding: 8px 8px 0;
+    transition: transform 0.4s cubic-bezier(.2,.9,.3,1), border-color 0.3s, box-shadow 0.3s;
+    cursor: zoom-in;
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.5);
+  }
+  .proof-shot.proof-shot-wide { grid-column: span 12; }
+  .proof-shot::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 30px; right: 30px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(37, 211, 102, 0.4), transparent);
+    z-index: 2;
+  }
+  .proof-shot:hover {
+    transform: translateY(-4px);
+    border-color: rgba(37, 211, 102, 0.3);
+    box-shadow: 0 40px 80px -30px rgba(37, 211, 102, 0.35);
+  }
+  .proof-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 620px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 16px 16px 0 0;
+    background: #0a0e0c;
+  }
+  .proof-shot.proof-shot-wide img {
+    max-height: 520px;
+    object-fit: contain;
+    background: #0a0e0c;
+  }
+  .proof-shot figcaption {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px 14px;
+  }
+  .proof-shot .ps-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 92, 'opsz' 24, 'wght' 560;
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .proof-shot .ps-group {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    color: var(--success);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(37, 211, 102, 0.08);
+    border: 1px solid rgba(37, 211, 102, 0.22);
+  }
+
+  @media (max-width: 900px) {
+    .proof-shot { grid-column: span 12; }
+    .proof-shot img { max-height: 560px; }
+  }
+  .chat-card {
+    background: linear-gradient(180deg, rgba(18, 22, 20, 0.9), rgba(10, 14, 12, 0.8));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px 22px 22px;
+    backdrop-filter: blur(14px);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(.2,.9,.3,1), border-color 0.3s, box-shadow 0.3s;
+  }
+  .chat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 22px; right: 22px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(37, 211, 102, 0.4), transparent);
+  }
+  .chat-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(37, 211, 102, 0.25);
+    box-shadow: 0 30px 60px -30px rgba(37, 211, 102, 0.3);
+  }
+  .chat-card.span-2 { grid-column: span 2; }
+
+  .chat-head {
+    display: flex; align-items: center; gap: 12px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .chat-avatar {
+    width: 38px; height: 38px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px; font-weight: 700;
+    color: rgba(0,0,0,0.75);
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .chat-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 95, 'opsz' 24, 'wght' 560;
+    font-size: 15px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .chat-sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .chat-wa {
+    margin-left: auto;
+    width: 18px; height: 18px;
+    color: var(--success); opacity: 0.65;
+    flex-shrink: 0;
+  }
+  .chat-group-tag {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9.5px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(37, 211, 102, 0.1);
+    color: var(--success);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-left: auto;
+    flex-shrink: 0;
+    border: 1px solid rgba(37, 211, 102, 0.2);
+  }
+
+  .bubble {
+    position: relative;
+    padding: 12px 14px 22px;
+    background: rgba(37, 211, 102, 0.06);
+    border: 1px solid rgba(37, 211, 102, 0.14);
+    border-radius: 14px 14px 14px 4px;
+    color: var(--ink);
+    font-family: 'Geist', sans-serif;
+    font-size: 14.5px;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+  }
+  .bubble + .bubble { margin-top: 8px; }
+  .bubble strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .bubble-time {
+    position: absolute;
+    right: 12px; bottom: 6px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .bubble-time .ticks { color: #53bdeb; font-size: 11px; }
+
+  .bubble-stat {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(255, 106, 31, 0.12), rgba(37, 211, 102, 0.06));
+    border: 1px solid rgba(255, 106, 31, 0.25);
+    border-radius: 14px;
+  }
+  .bubble-stat .stat-num {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 88, 'opsz' 96, 'wght' 680;
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+  }
+  .bubble-stat .stat-lbl {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+  }
+
+  .proof-count {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px;
+    margin-top: 32px;
+    padding-top: 28px;
+    border-top: 1px dashed var(--line);
+  }
+  .proof-count-num {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-variation-settings: 'wdth' 88, 'opsz' 96, 'wght' 620;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+  }
+  .proof-count-lbl {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
   }
 </style>
 </head>
@@ -689,6 +933,53 @@
         VS Code, Antigravity, Cursor, terminal — qualquer uma.
         A sessão cola automaticamente. Começa a codar.
       </p>
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF · feedbacks reais do grupo -->
+  <div class="proof-wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="tag-mini">feedback real · grupo #8</div>
+        <h2 class="display">Direto do grupo.<br/><span class="hi">Sem script.</span></h2>
+      </div>
+      <p>
+        Prints de conversas no grupo oficial — devs rodando Max 20x
+        dividido na prática, contando o que mudou no dia-a-dia.
+      </p>
+    </div>
+
+    <div class="proof-grid proof-grid-img">
+
+      <figure class="proof-shot reveal">
+        <img src="images/feedback-caio.jpg" alt="Feedback do Caio no grupo Claude #8 sobre reasoning e tokens" loading="lazy" />
+        <figcaption>
+          <span class="ps-name">Caio</span>
+          <span class="ps-group">grupo #8</span>
+        </figcaption>
+      </figure>
+
+      <figure class="proof-shot reveal">
+        <img src="images/feedback-rafael-renan.jpg" alt="Rafael Souza e Renan no grupo Claude #8 recomendando o plano Max 20x" loading="lazy" />
+        <figcaption>
+          <span class="ps-name">Rafael · Renan</span>
+          <span class="ps-group">grupo #8</span>
+        </figcaption>
+      </figure>
+
+      <figure class="proof-shot reveal proof-shot-wide">
+        <img src="images/feedback-eduardo.jpg" alt="Eduardo mostrando uso de apenas 3% após 3 horas de sessão no Claude Max 20x" loading="lazy" />
+        <figcaption>
+          <span class="ps-name">Eduardo · Renan (CEO)</span>
+          <span class="ps-group">3% em 3h de sessão</span>
+        </figcaption>
+      </figure>
+
+    </div>
+
+    <div class="proof-count reveal">
+      <span class="proof-count-num">80+</span>
+      <span class="proof-count-lbl">devs já rodando · 8 grupos ativos</span>
     </div>
   </div>
 
