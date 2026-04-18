@@ -589,26 +589,25 @@
     gap: 18px;
   }
 
-  /* ----- image-based proof grid ----- */
+  /* ----- image-based proof grid · 3 equal columns, no cropping ----- */
   .proof-grid-img {
-    grid-template-columns: repeat(12, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 22px;
     align-items: start;
   }
   .proof-shot {
     position: relative;
     margin: 0;
-    grid-column: span 6;
     border-radius: 22px;
     overflow: hidden;
     background: linear-gradient(180deg, rgba(18, 22, 20, 0.9), rgba(10, 14, 12, 0.85));
     border: 1px solid var(--line);
     padding: 8px 8px 0;
     transition: transform 0.4s cubic-bezier(.2,.9,.3,1), border-color 0.3s, box-shadow 0.3s;
-    cursor: zoom-in;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 30px 60px -30px rgba(0,0,0,0.5);
   }
-  .proof-shot.proof-shot-wide { grid-column: span 12; }
   .proof-shot::before {
     content: '';
     position: absolute;
@@ -621,18 +620,18 @@
     border-color: rgba(37, 211, 102, 0.3);
     box-shadow: 0 40px 80px -30px rgba(37, 211, 102, 0.35);
   }
+  .proof-shot .shot-frame {
+    width: 100%;
+    aspect-ratio: 9 / 19;
+    background: #0a0e0c;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
   .proof-shot img {
     display: block;
     width: 100%;
-    height: auto;
-    max-height: 620px;
-    object-fit: cover;
-    object-position: center top;
-    border-radius: 16px 16px 0 0;
-    background: #0a0e0c;
-  }
-  .proof-shot.proof-shot-wide img {
-    max-height: 520px;
+    height: 100%;
     object-fit: contain;
     background: #0a0e0c;
   }
@@ -661,8 +660,7 @@
   }
 
   @media (max-width: 900px) {
-    .proof-shot { grid-column: span 12; }
-    .proof-shot img { max-height: 560px; }
+    .proof-grid-img { grid-template-columns: 1fr; gap: 18px; }
   }
   .chat-card {
     background: linear-gradient(180deg, rgba(18, 22, 20, 0.9), rgba(10, 14, 12, 0.8));
@@ -952,7 +950,9 @@
     <div class="proof-grid proof-grid-img">
 
       <figure class="proof-shot reveal">
-        <img src="images/feedback-caio.jpg" alt="Feedback do Caio no grupo Claude #8 sobre reasoning e tokens" loading="lazy" />
+        <div class="shot-frame">
+          <img src="images/feedback-caio.jpg" alt="Feedback do Caio no grupo Claude #8 sobre reasoning e tokens" loading="lazy" />
+        </div>
         <figcaption>
           <span class="ps-name">Caio</span>
           <span class="ps-group">grupo #8</span>
@@ -960,18 +960,22 @@
       </figure>
 
       <figure class="proof-shot reveal">
-        <img src="images/feedback-rafael-renan.jpg" alt="Rafael Souza e Renan no grupo Claude #8 recomendando o plano Max 20x" loading="lazy" />
+        <div class="shot-frame">
+          <img src="images/feedback-rafael-renan.jpg" alt="Rafael Souza e Renan no grupo Claude #8 recomendando o plano Max 20x" loading="lazy" />
+        </div>
         <figcaption>
           <span class="ps-name">Rafael · Renan</span>
           <span class="ps-group">grupo #8</span>
         </figcaption>
       </figure>
 
-      <figure class="proof-shot reveal proof-shot-wide">
-        <img src="images/feedback-eduardo.jpg" alt="Eduardo mostrando uso de apenas 3% após 3 horas de sessão no Claude Max 20x" loading="lazy" />
+      <figure class="proof-shot reveal">
+        <div class="shot-frame">
+          <img src="images/feedback-eduardo.jpg" alt="Eduardo mostrando uso de apenas 3% após 3 horas de sessão no Claude Max 20x" loading="lazy" />
+        </div>
         <figcaption>
-          <span class="ps-name">Eduardo · Renan (CEO)</span>
-          <span class="ps-group">3% em 3h de sessão</span>
+          <span class="ps-name">Eduardo · Renan</span>
+          <span class="ps-group">3% em 3h</span>
         </figcaption>
       </figure>
 
