@@ -551,21 +551,135 @@
   .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  /* Responsive */
-  @media (max-width: 900px) {
-    nav { padding: 14px 18px; }
-    nav .tag { font-size: 10px; padding: 6px 10px; }
-    .hero { grid-template-columns: 1fr; padding: 110px 18px 40px; gap: 32px; }
+  /* ============================================================
+     RESPONSIVE · tablet → large phone → small phone
+     ============================================================ */
+
+  /* ---------- TABLET · ≤ 960px ---------- */
+  @media (max-width: 960px) {
+    nav { padding: 14px 20px; }
+    nav .brand { font-size: 20px; }
+    nav .brand .logo-mark { width: 30px; height: 30px; }
+    nav .tag { font-size: 10px; padding: 6px 10px; letter-spacing: 0.08em; }
+
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 110px 22px 40px;
+      gap: 34px;
+      min-height: auto;
+    }
     .terminal { transform: none; }
     .terminal:hover { transform: scale(1.01); }
-    .price-strip { grid-template-columns: 1fr; padding: 0 18px; }
-    section.deep { padding: 80px 18px; }
-    .section-head { grid-template-columns: 1fr; gap: 22px; margin-bottom: 50px; }
-    .steps { grid-template-columns: 1fr; }
+
+    .price-strip { grid-template-columns: 1fr; padding: 0 22px; gap: 10px; }
+    section.deep { padding: 84px 22px; max-width: 100%; }
+    .section-head { grid-template-columns: 1fr; gap: 22px; margin-bottom: 52px; }
+    .steps { grid-template-columns: 1fr; gap: 12px; }
     .faq-wrap { grid-template-columns: 1fr; gap: 40px; }
-    .final-cta { padding: 50px 24px; margin-top: 70px; }
-    .proof-grid { grid-template-columns: 1fr !important; }
-    .chat-card.span-2 { grid-column: span 1 !important; }
+    .final-cta { padding: 56px 30px; margin-top: 72px; }
+  }
+
+  /* ---------- LARGE PHONE · ≤ 640px ---------- */
+  @media (max-width: 640px) {
+    nav { padding: 12px 16px; }
+    nav .brand { font-size: 17px; gap: 8px; }
+    nav .brand .logo-mark { width: 26px; height: 26px; }
+    nav .tag {
+      font-size: 9px; padding: 5px 9px; gap: 7px;
+      letter-spacing: 0.06em;
+    }
+    nav .tag .dot { width: 5px; height: 5px; }
+
+    .hero { padding: 92px 16px 28px; gap: 24px; }
+    .eyebrow {
+      font-size: 10px; padding: 6px 12px;
+      margin-bottom: 18px; letter-spacing: 0.12em;
+    }
+
+    h1.display {
+      font-size: clamp(34px, 9.5vw, 52px);
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+
+    .hero-save {
+      font-size: 11px; padding: 7px 12px; gap: 8px;
+      margin-bottom: 26px; flex-wrap: wrap;
+    }
+    .hero-save .pct { padding: 2px 7px; font-size: 10.5px; }
+
+    .lede { font-size: 15.5px; line-height: 1.58; margin-bottom: 28px; }
+
+    .cta-row { width: 100%; gap: 10px; }
+    .cta-row .btn {
+      flex: 1 1 100%; justify-content: center;
+      padding: 15px 22px; font-size: 14.5px;
+    }
+
+    .term-head { padding: 12px 14px; }
+    .term-head .title { font-size: 10px; }
+    .term-body { padding: 18px; font-size: 12px; line-height: 1.8; }
+
+    .price-strip { margin-top: 24px; padding: 0 16px; gap: 8px; }
+    .price-cell { padding: 22px 20px; }
+    .price-cell .val { font-size: 34px; }
+    .price-cell .val .u { font-size: 18px; }
+    .price-cell .sub { font-size: 12.5px; }
+
+    section.deep { padding: 64px 16px; }
+    .section-head { margin-bottom: 40px; }
+    .section-head h2 { font-size: clamp(32px, 10vw, 48px); }
+    .section-head p { font-size: 15px; }
+
+    .steps { margin-bottom: 64px; }
+    .step { padding: 26px 22px; }
+    .step .num { font-size: 48px; margin-bottom: 14px; }
+    .step h3 { font-size: 19px; }
+    .step p { font-size: 14px; }
+
+    .faq-side h3 { font-size: 36px; }
+    .faq-side h3 br { display: none; }
+    .faq-side p { font-size: 14.5px; }
+    .faq-side .badge { font-size: 10px; padding: 5px 10px; margin-bottom: 18px; }
+
+    .faq-item { padding: 18px 20px; }
+    .faq-item .q { gap: 14px; }
+    .faq-item .q h4 { font-size: 16.5px; line-height: 1.35; }
+    .faq-item .toggle { width: 26px; height: 26px; font-size: 15px; }
+    .faq-item .a p { font-size: 14px; }
+    .faq-item .a .callout { font-size: 11.5px; padding: 10px 14px; }
+
+    .final-cta {
+      padding: 44px 22px; margin-top: 56px; border-radius: 18px;
+    }
+    .final-cta .tiny { font-size: 10px; padding: 5px 12px; margin-bottom: 18px; }
+    .final-cta h2 { font-size: clamp(30px, 9vw, 44px); margin-bottom: 18px; }
+    .final-cta p { font-size: 15px; margin-bottom: 26px; }
+    .final-cta .btn-primary {
+      font-size: 14.5px; padding: 16px 28px;
+      width: 100%; justify-content: center;
+    }
+
+    footer { padding: 24px 16px; font-size: 10px; letter-spacing: 0.12em; }
+  }
+
+  /* ---------- SMALL PHONE · ≤ 420px ---------- */
+  @media (max-width: 420px) {
+    nav .tag { display: none; }
+    nav { padding: 12px 14px; }
+
+    .hero { padding: 84px 14px 22px; }
+    h1.display { font-size: clamp(28px, 11vw, 38px); }
+    .hero-save { font-size: 10.5px; }
+
+    .term-body { padding: 16px; font-size: 11.5px; line-height: 1.75; }
+
+    section.deep { padding: 56px 14px; }
+    .section-head h2 { font-size: clamp(26px, 10vw, 36px); }
+    .faq-side h3 { font-size: 32px; }
+
+    .final-cta h2 { font-size: 28px; }
+    .step .num { font-size: 42px; }
   }
 
   /* ===== SOCIAL PROOF · chat style ===== */
@@ -659,8 +773,18 @@
     border: 1px solid rgba(37, 211, 102, 0.22);
   }
 
-  @media (max-width: 900px) {
-    .proof-grid-img { grid-template-columns: 1fr; gap: 18px; }
+  @media (max-width: 960px) {
+    .proof-grid-img { gap: 14px; }
+  }
+  @media (max-width: 640px) {
+    .proof-grid-img {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      max-width: 380px;
+      margin-inline: auto;
+    }
+    .proof-shot .shot-frame { aspect-ratio: 3 / 4; max-height: 520px; }
+    .proof-wrap { margin-bottom: 64px; }
   }
   .chat-card {
     background: linear-gradient(180deg, rgba(18, 22, 20, 0.9), rgba(10, 14, 12, 0.8));
